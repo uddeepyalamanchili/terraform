@@ -83,3 +83,28 @@ resource "aws_eip" "default" {
     instance = aws_instance.instance_with_volume.id
     vpc      = true
 }
+
+resource "aws_elb" "bar" {
+  name               = "foobar-terraform-elb"
+  availability_zones = ["us-west-2a", "us-west-2b", "us-west-2c"]
+
+  access_logs {
+    bucket        = "foo"
+    bucket_prefix = "bar"
+    interval      = 60
+  }
+
+  listener {
+    instance_port     = 8000
+    instance_protocol = "http"
+    lb_port           = 80
+    lb_protocol       = "http"
+  }
+
+  listener {
+    instance_port      = 8000
+    instance_protocol  = "http"
+    lb_port            = 443
+    lb_protocol        = "https"
+    ssl_certificate_id = "arn:aws:iam::123456789012:server-certificate/certName"
+  }
